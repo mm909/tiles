@@ -9,6 +9,8 @@ from itertools import product, starmap
 #   Width of sprite
 #   Height of sprite
 
+offset = 0
+
 LEFTBUFFER = 30
 TOPBUFFER = 45
 XBUFFER = (23 + 75) * 0
@@ -49,14 +51,14 @@ def draw():
     for i, layer in enumerate(tileMap):
         for j, tile in enumerate(layer):
             if(tile != -1):
-                screen.blit(tile, (j * 75, Topspace + (75 * i)))
+                screen.blit(tile, (j * 75, Topspace + (75 * i) - offset))
             pass
         pass
     pygame.display.flip()
 
 def checkClick(pos):
     xpos = int(pos[0] / 75)
-    ypos = int((pos[1] / 75) - (Topspace / 75))
+    ypos = int(((pos[1]) / 75) - (Topspace / 75) )
     # print(tileMapIndex[ypos][xpos])
     if checkNeighbors(ypos,xpos):
         tileMapIndex[ypos][xpos] = -1
@@ -115,10 +117,17 @@ pygame.display.flip()
 
 running = True
 lasttime = datetime.datetime.now()
+lasttimeOff = datetime.datetime.now()
 currtime = datetime.datetime.now()
 while running:
     currtime = datetime.datetime.now()
-    if randint(0, 100) < 100 and (currtime - lasttime).total_seconds() > .05:
+
+    if (currtime - lasttimeOff).total_seconds() > .1:
+        offset += 1
+        lasttimeOff = datetime.datetime.now()
+
+
+    if randint(0, 100) < 100 and (currtime - lasttime).total_seconds() > .1:
         makeNewTile()
         draw()
         lasttime = datetime.datetime.now()
